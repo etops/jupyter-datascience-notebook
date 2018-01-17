@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/etops/jupyter-datascience-notebook
     parallelism: 1
-    shell: /bin/bash --login
+    # shell: /bin/bash --login
     environment:
       DOCKER_PRIVATE_REPO: etops
       IMAGE_NAME: jupyter-datascience-notebook
