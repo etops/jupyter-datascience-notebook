@@ -1,0 +1,48 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/etops/jupyter-datascience-notebook
+    parallelism: 1
+    shell: /bin/bash --login
+    environment:
+      DOCKER_PRIVATE_REPO: etops
+      IMAGE_NAME: jupyter-datascience-notebook
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      # Free replacement for building with docker_layer_caching: true
+      # See: https://circleci.com/blog/how-to-build-a-docker-image-on-circleci-2-0/
+      - restore_cache:
+          keys:
+            - v1-{{ .Branch }}
+          paths:
+            - /caches/app.tar
+      - run:
+          name: Load Docker image layer cache
+          command: |
+            set +o pipefail
+            docker load -i /caches/app.tar | true
+      - run:
+          name: Build application Docker image
+          command: |
+            docker build --cache-from=app -t $DOCKER_PRIVATE_REPO/$IMAGE_NAME:$CIRCLE_BUILD_NUM .
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p /caches
+            docker save -o /caches/app.tar app
+      - save_cache:
+          key: v1-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /caches/app.tar
+
+     # Login to docker hub and push the image
+      - deploy:
+          name: Push application Docker image
+          command: |
+            docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+            docker push $DOCKER_PRIVATE_REPO/$IMAGE_NAME:$CIRCLE_BUILD_NUM
+            docker push $DOCKER_PRIVATE_REPO/$IMAGE_NAME:latest
