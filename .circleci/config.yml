@@ -32,7 +32,7 @@ jobs:
           name: Save Docker image layer cache
           command: |
             mkdir -p /caches
-            docker save -o /caches/${IMAGE_NAME}.tar $IMAGE_NAME
+            docker save -o /caches/${IMAGE_NAME}.tar $DOCKER_PRIVATE_REPO/$IMAGE_NAME
       - save_cache:
           key: v1-{{ .Branch }}-{{ epoch }}
           paths:
