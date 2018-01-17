@@ -45,4 +45,3 @@ jobs:
           command: |
             docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
             docker push $DOCKER_PRIVATE_REPO/$IMAGE_NAME:$CIRCLE_BUILD_NUM
-            docker push $DOCKER_PRIVATE_REPO/$IMAGE_NAME:latest
