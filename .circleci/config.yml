@@ -12,36 +12,39 @@ jobs:
       - checkout
       - setup_remote_docker
 
-      # Free replacement for building with docker_layer_caching: true
+      # Free replacement for building with `docker_layer_caching: true`
       # See: https://circleci.com/blog/how-to-build-a-docker-image-on-circleci-2-0/
       - restore_cache:
           keys:
-            - v1-{{ .Branch }}
+            - v1-dep-docker-{{ .Branch }}
           paths:
-            - /caches/${IMAGE_NAME}.tar
+            - ~/caches
       - run:
           name: Load Docker image layer cache
           command: |
             set +o pipefail
-            docker load -i /caches/${IMAGE_NAME}.tar | true
+            docker load -i ~/caches/$IMAGE_NAME.tar || true
       - run:
           name: Build application Docker image
           command: |
-            docker build --cache-from=$IMAGE_NAME -t $DOCKER_PRIVATE_REPO/$IMAGE_NAME:$CIRCLE_BUILD_NUM .
+            docker build --cache-from=$IMAGE_NAME -t $IMAGE_NAME .
       - run:
           name: Save Docker image layer cache
           command: |
-            mkdir -p /caches
-            docker save -o /caches/${IMAGE_NAME}.tar $DOCKER_PRIVATE_REPO/$IMAGE_NAME
-          no_output_timeout: 60m
+            mkdir -p ~/caches
+            docker save -o ~/caches/$IMAGE_NAME.tar $IMAGE_NAME
+          no_output_timeout: 30m
       - save_cache:
-          key: v1-{{ .Branch }}-{{ epoch }}
+          key: v1-dep-docker-{{ .Branch }}-{{ epoch }}
           paths:
-            - /caches/${IMAGE_NAME}.tar
+            - ~/caches
 
      # Login to docker hub and push the image
       - deploy:
           name: Push application Docker image
           command: |
-            docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-            docker push $DOCKER_PRIVATE_REPO/$IMAGE_NAME:$CIRCLE_BUILD_NUM
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker tag $IMAGE_NAME $DOCKER_PRIVATE_REPO/$IMAGE_NAME:latest
+            docker tag $IMAGE_NAME $DOCKER_PRIVATE_REPO/$IMAGE_NAME:$CIRCLE_BUILD_NUM_DOCKER
+            docker push $DOCKER_PRIVATE_REPO/$IMAGE_NAME:$CIRCLE_BUILD_NUM_DOCKER
+            docker push $DOCKER_PRIVATE_REPO/$IMAGE_NAME:latest
