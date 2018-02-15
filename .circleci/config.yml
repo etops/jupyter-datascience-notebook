@@ -62,13 +62,17 @@ jobs:
 
       - run:
           name: Test jupyter on https
-          command: curl --insecure --fail https://localhost/tree/work
+          command: |
+            until curl --insecure --fail https://localhost/tree/work ; do
+              sleep 5
+            done
 
       - run:
           name: Test nginx http to https redirect
           command: |
-            curl --insecure --fail http://localhost/tree/work 2>/dev/null | grep "301 Moved Permanently"
-            curl --insecure --fail --location http://localhost/tree/work
+            until curl --insecure --fail --location http://localhost/tree/work ; do
+              sleep 5
+            done
 
 
 deploy:
