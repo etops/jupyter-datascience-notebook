@@ -1,0 +1,20 @@
+version: "3.3"
+
+services:
+  nginx:
+    image: etops/docker-nginx-https-redirect
+    ports:
+      - 80:80
+      
+  jupyter:
+    image: etops/jupyter-datascience-notebook
+    ports:
+      - 443:8888
+    volumes:
+      - /opt/jupyter/ssl:/etc/letsencrypt/
+      - /opt/jupyter/work:/home/jovyan/work
+    environment:
+      NB_UID: "1000"
+      NB_GID: "100"
+      GRANT_SUDO: "yes"
+      GEN_CERT: "yes"
