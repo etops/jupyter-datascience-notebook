@@ -53,7 +53,7 @@ jobs:
           name: Run docker compose to deploy the stack
           command: |
             mkdir -p ssl work
-            docker-compose -f docker-stacks/docker-compose.yml -f docker-stacks/docker-compose.local.yml -f docker-stacks/docker-compose.circleci.yml
+            docker-compose -f docker-stacks/docker-compose.yml -f docker-stacks/docker-compose.local.yml -f docker-stacks/docker-compose.circleci.yml up
 
       - run:
           name: Test jupyter on https
