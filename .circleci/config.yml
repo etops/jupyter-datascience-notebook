@@ -28,7 +28,8 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - caches # docker image
+            - etops
+            - caches
             
 
   test:
@@ -53,7 +54,11 @@ jobs:
           name: Run docker compose to deploy the stack
           command: |
             mkdir -p ssl work
-            docker-compose -f docker-stacks/docker-compose.yml -f docker-stacks/docker-compose.local.yml -f docker-stacks/docker-compose.circleci.yml up
+            docker swarm init
+            docker-compose -f docker-stacks/docker-compose.yml -f docker-stacks/docker-compose.local.yml -f docker-stacks/docker-compose.circleci.yml config | docker stack deploy --compose-file - jupyter
+      - run:
+          command: docker service ps --no-trunc $(docker service ls -q)
+          when: on_fail
 
       - run:
           name: Test jupyter on https
