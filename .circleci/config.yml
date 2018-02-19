@@ -12,7 +12,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-          docker_layer_caching: true 
+          docker_layer_caching: true
 
       - run:
           name: Build application Docker image
@@ -24,13 +24,13 @@ jobs:
             mkdir -p ~/caches
             docker save -o ~/caches/$IMAGE_NAME.tar $IMAGE_NAME
           no_output_timeout: 30m
-  
+
       - persist_to_workspace:
           root: ~/
           paths:
             - etops
             - caches
-            
+
 
   test:
     working_directory: ~/etops/jupyter-datascience-notebook
@@ -43,7 +43,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-    
+
       - run:
           name: Load Docker image layer cache
           command: |
@@ -75,30 +75,30 @@ jobs:
             done
 
 
-deploy:
-  working_directory: ~/etops/jupyter-datascience-notebook
-  parallelism: 1
-  environment:
-    DOCKER_PRIVATE_REPO: etops
-    IMAGE_NAME: jupyter-datascience-notebook
-  docker:
-    - image: docker:latest
+  deploy:
+    working_directory: ~/etops/jupyter-datascience-notebook
+    parallelism: 1
+    environment:
+      DOCKER_PRIVATE_REPO: etops
+      IMAGE_NAME: jupyter-datascience-notebook
+    docker:
+      - image: docker:latest
 
-  steps:
-    - setup_remote_docker:
-        docker_layer_caching: true 
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
 
-    - attach_workspace:
-      at: ~/
-      
-    - deploy:
-        name: Push application Docker image
-        command: |
-          docker login -u $DOCKER_USER -p $DOCKER_PASS
-          docker tag $IMAGE_NAME $DOCKER_PRIVATE_REPO/$IMAGE_NAME:latest
-          docker tag $IMAGE_NAME $DOCKER_PRIVATE_REPO/$IMAGE_NAME:$CIRCLE_BUILD_NUM
-          docker push $DOCKER_PRIVATE_REPO/$IMAGE_NAME:$CIRCLE_BUILD_NUM
-          docker push $DOCKER_PRIVATE_REPO/$IMAGE_NAME:latest
+      - attach_workspace:
+        at: ~/
+
+      - deploy:
+          name: Push application Docker image
+          command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker tag $IMAGE_NAME $DOCKER_PRIVATE_REPO/$IMAGE_NAME:latest
+            docker tag $IMAGE_NAME $DOCKER_PRIVATE_REPO/$IMAGE_NAME:$CIRCLE_BUILD_NUM
+            docker push $DOCKER_PRIVATE_REPO/$IMAGE_NAME:$CIRCLE_BUILD_NUM
+            docker push $DOCKER_PRIVATE_REPO/$IMAGE_NAME:latest
 
 workflows:
   version: 2
@@ -111,4 +111,3 @@ workflows:
       - deploy:
           requires:
             - test
-             
