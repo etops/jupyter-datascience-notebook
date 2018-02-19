@@ -12,7 +12,7 @@ Read more about Dockerfile: [JUPYTER.md](JUPYTER.md)
 - in compose mode:
 ```
 mkdir -p ssl work
-docker-compose -f docker-stacks/docker-compose.yml -f docker-stacks/docker-compose.local.yml up
+docker-compose -f docker-stacks/docker-compose.yml -f docker-stacks/docker-compose.local.yml up -d
 ```
 
 - in swarm mode:
