@@ -6,9 +6,12 @@ services:
       driver: gelf
       options:
         gelf-address: udp://localhost:12201
-      
+
   jupyter:
     command: start-notebook.sh --NotebookApp.password='sha1:c1035137e1b3:297626588fbfc95cd08fde55d65d51a400d4f469' --NotebookApp.keyfile=/etc/letsencrypt/privkey.pem --NotebookApp.certfile=/etc/letsencrypt/fullchain.pem
+    volumes:
+      - /opt/jupyter/ssl:/etc/letsencrypt/
+      - /opt/jupyter/work:/home/jovyan/work
     environment:
       NB_UID: "1000"
       NB_GID: "100"

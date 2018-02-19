@@ -6,3 +6,8 @@ services:
     volumes:
       - ..//ssl:/etc/letsencrypt/
       - ../work:/home/jovyan/work
+    environment:
+      NB_UID: "1000"
+      NB_GID: "100"
+      GRANT_SUDO: "yes"
+      GEN_CERT: "yes"
