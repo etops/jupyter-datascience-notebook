@@ -1,8 +1,8 @@
 version: "3.3"
 
-services:   
+services:
   jupyter:
     command: start-notebook.sh --NotebookApp.token=''
     volumes:
-      - ./ssl:/etc/letsencrypt/
-      - ./work:/home/jovyan/work
+      - ..//ssl:/etc/letsencrypt/
+      - ../work:/home/jovyan/work
