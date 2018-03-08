@@ -116,4 +116,4 @@ workflows:
             - build
       - deploy:
           requires:
-            - tets
+            - test
