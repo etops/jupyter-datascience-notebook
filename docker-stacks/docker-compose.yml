@@ -10,3 +10,8 @@ services:
     image: etops/jupyter-datascience-notebook
     ports:
       - 443:8888
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
