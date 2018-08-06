@@ -1,10 +1,10 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/etops/jupyter-datascience-notebook
+    working_directory: ~/nectar-wm/jupyter-datascience-notebook
     parallelism: 1
     environment:
-      DOCKER_PRIVATE_REPO: etops
+      DOCKER_PRIVATE_REPO: nectar-wm
       IMAGE_NAME: jupyter-datascience-notebook
     docker:
       - image: docker:latest
@@ -28,14 +28,14 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - etops
+            - nectar-wm
             - caches
 
   test:
-    working_directory: ~/etops/jupyter-datascience-notebook
+    working_directory: ~/nectar-wm/jupyter-datascience-notebook
     parallelism: 1
     environment:
-      DOCKER_PRIVATE_REPO: etops
+      DOCKER_PRIVATE_REPO: nectar-wm
       IMAGE_NAME: jupyter-datascience-notebook
     machine: true
 
@@ -82,10 +82,10 @@ jobs:
 
 
   deploy:
-    working_directory: ~/etops/jupyter-datascience-notebook
+    working_directory: ~/nectar-wm/jupyter-datascience-notebook
     parallelism: 1
     environment:
-      DOCKER_PRIVATE_REPO: etops
+      DOCKER_PRIVATE_REPO: nectar-wm
       IMAGE_NAME: jupyter-datascience-notebook
     docker:
       - image: docker:latest
