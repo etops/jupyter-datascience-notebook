@@ -66,12 +66,12 @@ jobs:
               sleep 5
             done
 
-      - run:
-          name: Test nginx http to https redirect
-          command: |
-            until curl --fail --location http://localhost/tree/work ; do
-              sleep 5
-            done
+      # - run:
+      #     name: Test nginx http to https redirect
+      #     command: |
+      #       until curl --fail --location http://localhost/tree/work ; do
+      #         sleep 5
+      #       done
 
       - run:
           name: Test grafana
