@@ -4,7 +4,7 @@ jobs:
     working_directory: ~/nectar-wm/jupyter-datascience-notebook
     parallelism: 1
     environment:
-      DOCKER_PRIVATE_REPO: nectar-wm
+      DOCKER_PRIVATE_REPO: nectarwm
       IMAGE_NAME: jupyter-datascience-notebook
     docker:
       - image: docker:latest
@@ -35,7 +35,7 @@ jobs:
     working_directory: ~/nectar-wm/jupyter-datascience-notebook
     parallelism: 1
     environment:
-      DOCKER_PRIVATE_REPO: nectar-wm
+      DOCKER_PRIVATE_REPO: nectarwm
       IMAGE_NAME: jupyter-datascience-notebook
     machine: true
 
