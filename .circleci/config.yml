@@ -1,7 +1,7 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/nectar-wm/jupyter-datascience-notebook
+    working_directory: ~/jupyter-datascience-notebook
     parallelism: 1
     environment:
       DOCKER_PRIVATE_REPO: nectarwm
@@ -18,36 +18,6 @@ jobs:
           name: Build application Docker image
           command: docker build --cache-from=$IMAGE_NAME -t $IMAGE_NAME .
           no_output_timeout: 30m
-      - run:
-          name: Save Docker image
-          command: |
-            mkdir -p ~/caches
-            docker save -o ~/caches/$IMAGE_NAME.tar $IMAGE_NAME
-          no_output_timeout: 30m
-
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - nectar-wm
-            - caches
-
-  test:
-    working_directory: ~/nectar-wm/jupyter-datascience-notebook
-    parallelism: 1
-    environment:
-      DOCKER_PRIVATE_REPO: nectarwm
-      IMAGE_NAME: jupyter-datascience-notebook
-    machine: true
-
-    steps:
-      - attach_workspace:
-          at: ~/
-
-      - run:
-          name: Load Docker image layer cache
-          command: |
-            set +o pipefail
-            docker load -i ~/caches/$IMAGE_NAME.tar
 
       - run:
           name: Run docker compose to deploy the stack
@@ -66,36 +36,12 @@ jobs:
               sleep 5
             done
 
-      # - run:
-      #     name: Test nginx http to https redirect
-      #     command: |
-      #       until curl --fail --location http://localhost/tree/work ; do
-      #         sleep 5
-      #       done
-
       - run:
           name: Test grafana
           command: |
             until curl --fail --location -u admin:admin http://localhost:3000 ; do
               sleep 5
             done
-
-
-  deploy:
-    working_directory: ~/nectar-wm/jupyter-datascience-notebook
-    parallelism: 1
-    environment:
-      DOCKER_PRIVATE_REPO: nectarwealth
-      IMAGE_NAME: jupyter-datascience-notebook
-    docker:
-      - image: docker:latest
-
-    steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
-
-      - attach_workspace:
-          at: ~/
 
       - deploy:
           name: Push application Docker image
@@ -105,15 +51,3 @@ jobs:
             docker tag $IMAGE_NAME $DOCKER_PRIVATE_REPO/$IMAGE_NAME:$CIRCLE_BUILD_NUM
             docker push $DOCKER_PRIVATE_REPO/$IMAGE_NAME:$CIRCLE_BUILD_NUM
             docker push $DOCKER_PRIVATE_REPO/$IMAGE_NAME:latest
-
-workflows:
-  version: 2
-  build_test_deploy:
-    jobs:
-      - build
-      - test:
-          requires:
-            - build
-      - deploy:
-          requires:
-            - test
