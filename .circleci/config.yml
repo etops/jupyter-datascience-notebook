@@ -6,8 +6,7 @@ jobs:
     environment:
       DOCKER_PRIVATE_REPO: nectarwm
       IMAGE_NAME: jupyter-datascience-notebook
-    docker:
-      - image: docker:latest
+    machine: true
 
     steps:
       - checkout
