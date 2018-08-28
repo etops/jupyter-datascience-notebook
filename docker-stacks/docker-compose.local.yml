@@ -10,4 +10,4 @@ services:
       NB_UID: "1000"
       NB_GID: "100"
       GRANT_SUDO: "yes"
-      GEN_CERT: "yes"
+      # GEN_CERT: "yes"

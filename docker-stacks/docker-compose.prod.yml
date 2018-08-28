@@ -1,12 +1,6 @@
 version: "3.2"
 
 services:
-  nginx:
-    logging:
-      driver: gelf
-      options:
-        gelf-address: udp://localhost:12201
-
   jupyter:
     command: start-notebook.sh --NotebookApp.password='sha1:c1035137e1b3:297626588fbfc95cd08fde55d65d51a400d4f469' --NotebookApp.keyfile=/etc/letsencrypt/privkey.pem --NotebookApp.certfile=/etc/letsencrypt/fullchain.pem
     volumes:
@@ -17,18 +11,9 @@ services:
       NB_GID: "100"
       GRANT_SUDO: "yes"
       GEN_CERT: "no"
-    logging:
-      driver: gelf
-      options:
-        gelf-address: udp://localhost:12201
 
   grafana:
     volumes:
       - /opt/grafana:/var/lib/grafana
     environment:
-      # GF_SERVER_ROOT_URL: "http://jupyter.nectar.technology"
       GF_SECURITY_ADMIN_PASSWORD: "nectarisawesome1"
-    logging:
-      driver: gelf
-      options:
-        gelf-address: udp://localhost:12201

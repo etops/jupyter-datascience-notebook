@@ -1,13 +1,8 @@
 version: "3.2"
 
 services:
-  nginx:
-    image: etops/docker-nginx-https-redirect
-    ports:
-      - 80:80
-
   jupyter:
-    image: etops/jupyter-datascience-notebook
+    image: nectarwm/jupyter-datascience-notebook
     ports:
       - 443:8888
 

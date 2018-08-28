@@ -20,8 +20,7 @@ jobs:
           name: Run docker compose to deploy the stack
           command: |
             mkdir -p ssl work
-            docker swarm init
-            docker-compose -f docker-stacks/docker-compose.yml -f docker-stacks/docker-compose.local.yml -f docker-stacks/docker-compose.circleci.yml config | docker stack deploy --compose-file - jupyter
+            docker-compose -f docker-stacks/docker-compose.yml -f docker-stacks/docker-compose.local.yml -f docker-stacks/docker-compose.circleci.yml up
       - run:
           command: docker service ps --no-trunc $(docker service ls -q)
           when: on_fail
